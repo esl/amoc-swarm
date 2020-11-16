@@ -33,10 +33,10 @@
         auto_remove: true
       loop: "{{ groups.docker_network }}"
       register: ret
-    - debug: msg="item.failed = {{ item.failed }}"
-      loop: "{{ ret.results }}"
-      loop_control:
-        label: "{{ item.item }}"
+#    - debug: msg="item.failed = {{ item.failed }}"
+#      loop: "{{ ret.results }}"
+#      loop_control:
+#        label: "{{ item.item }}"
 
 - name: Stop dummy containers
   hosts: docker_network

@@ -8,7 +8,7 @@
         state: present
         advertise_addr: "{{ advertise_addr | default(omit) }}"
       register: swarm_manager
-    - debug: msg="swarm token - {{ swarm_manager.swarm_facts.JoinTokens.Worker }}"
+#    - debug: msg="swarm token - {{ swarm_manager.swarm_facts.JoinTokens.Worker }}"
     - name: Store swarm token
       set_fact: swarm_token="{{ swarm_manager.swarm_facts.JoinTokens.Worker }}"
     - name: Get docker manager node info
@@ -17,14 +17,14 @@
       register: swarm_manager_info
     - name: Store swarm addr
       set_fact: swarm_addr="{{ swarm_manager_info.nodes[0].ManagerStatus.Addr }}"
-    - debug: msg="swarm remote address - {{ swarm_manager_info.nodes[0].ManagerStatus.Addr }}"
+#    - debug: msg="swarm remote address - {{ swarm_manager_info.nodes[0].ManagerStatus.Addr }}"
 
 - name: Join workers to swarm
   hosts: docker_network[1:]
   tasks:
-    - debug: var=groups.docker_network[0]
-    - debug: var=hostvars[groups.docker_network[0]].swarm_token
-    - debug: var=hostvars[groups.docker_network[0]].swarm_addr
+#    - debug: var=groups.docker_network[0]
+#    - debug: var=hostvars[groups.docker_network[0]].swarm_token
+#    - debug: var=hostvars[groups.docker_network[0]].swarm_addr
     - name: Join node to swarm
       docker_swarm:
         state: join
