@@ -1,0 +1,48 @@
+---
+
+- name: Create docker network
+  import_playbook: docker_network.yml
+
+- name: Start dummy containers
+  hosts: docker_network
+  tasks:
+    - name: Start dummy container
+      docker_container:
+        name: "{{ inventory_hostname }}_ping_test"
+        image: busybox
+        command: sleep infinity
+        detach: true
+        network_mode: "{{ docker_network_name }}"
+        networks_cli_compatible: true
+        container_default_behavior: no_defaults
+        state: started
+
+- name: Ping dummy containers
+  hosts: docker_network
+  tasks:
+    - name: Ping dummy containers
+      docker_container:
+        name: "ping_{{ item }}"
+        image: busybox
+        command: ping -c 1 "{{ item }}_ping_test"
+        detach: false
+        network_mode: "{{ docker_network_name }}"
+        networks_cli_compatible: true
+        container_default_behavior: no_defaults
+        state: started
+        auto_remove: true
+      loop: "{{ groups.docker_network }}"
+      register: ret
+    - debug: msg="item.failed = {{ item.failed }}"
+      loop: "{{ ret.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+- name: Stop dummy containers
+  hosts: docker_network
+  tasks:
+    - name: Stop dummy container
+      docker_container:
+        name: "{{ inventory_hostname }}_ping_test"
+        state: absent
+        container_default_behavior: no_defaults
