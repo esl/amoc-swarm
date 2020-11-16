@@ -1,0 +1,23 @@
+---
+
+- name: Install docker module
+  hosts: docker_network
+  tasks:
+    - name: Install docker module
+      pip:
+        name: docker
+
+- name: Start docker swarm if needed
+  import_playbook: docker_swarm.yml
+  when: groups['docker_network'] | length > 1
+
+- name: Create Docker network
+  hosts: docker_network[0]
+  vars:
+    network_type: "{{ 'overlay' if groups['docker_network'] | length > 1 else 'bridge' }}"
+  tasks:
+    - name: Create Docker network
+      docker_network:
+        name: "{{ docker_network_name }}"
+        driver: "{{ network_type }}"
+        attachable: "{{ true if network_type == 'overlay' else omit }}"
