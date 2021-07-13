@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get remove ansible
-          pip install ansible==2.10
+          pip install ansible==4.2
           echo "${HOME}/.local/bin" >> $GITHUB_PATH
       - name: Run docker network test
         run: "ansible-playbook -i ansible/localhost.ini ansible/docker_network_test.yml"

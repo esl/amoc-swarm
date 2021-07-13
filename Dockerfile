@@ -1,5 +1,5 @@
 FROM python:3.9-slim
-RUN pip install ansible
+RUN pip install ansible==4.2
 RUN apt-get update
 RUN apt-get install -y sshpass
 COPY ./ansible /ansible

@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "ci", autostart: false do |ci|
     ci.vm.hostname = "ci.test"
-    ci.vm.provision "shell", inline: "pip3 install ansible"
+    ci.vm.provision "shell", inline: "pip3 install ansible==4.2"
     ci.vm.synced_folder "./ansible", "/home/vagrant/ansible"
     ci.vm.network :private_network, ip: "10.0.0.10"
     ci.vm.provider :virtualbox do |vbox|
