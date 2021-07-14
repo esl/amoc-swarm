@@ -1,0 +1,47 @@
+---
+
+- name: Copy amoc env file
+  hosts: amoc_cluster
+  tasks:
+    - name: Copy amoc env file
+      copy:
+        src: "{{ amoc_env_file }}"
+        dest: /tmp
+
+- name: Start amoc master node
+  hosts: amoc_cluster[0]
+  tasks:
+    - name: Start amoc master container
+      docker_container:
+        name: "{{ inventory_hostname }}"
+        image: "{{ amoc_image }}"
+        env_file: "/tmp/{{ amoc_env_file | basename }}"
+        env:
+          AMOC_NODES: "[]"
+          AMOC_API_PORT: "{{ amoc_api_port | string }}"
+        detach: true
+        ports:
+          - "{{ amoc_api_port }}:{{ amoc_api_port }}"
+        hostname : "{{ inventory_hostname }}"
+        network_mode: "{{ docker_network_name }}"
+        networks_cli_compatible: true
+        container_default_behavior: no_defaults
+        state: started
+
+- name: Start amoc slave nodes
+  hosts: amoc_cluster[1:]
+  tasks:
+    - name: Start amoc slave container
+      docker_container:
+        name: "{{ inventory_hostname }}"
+        image: "{{ amoc_image }}"
+        env_file: "/tmp/{{ amoc_env_file | basename }}"
+        env:
+          AMOC_NODES: "['{{ amoc_app_name | string }}@{{ hostvars[groups.amoc_cluster[0]].inventory_hostname | string }}']"
+          AMOC_API_PORT: "{{ amoc_api_port | string }}"
+        detach: true
+        hostname: "{{ inventory_hostname }}"
+        network_mode: "{{ docker_network_name }}"
+        networks_cli_compatible: true
+        container_default_behavior: no_defaults
+        state: started
