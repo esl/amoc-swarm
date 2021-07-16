@@ -1,0 +1,10 @@
+- name: Upload scenario
+  hosts: amoc_cluster[0]
+  tasks:
+    - name: Upload amoc scenario on a master node
+      uri:
+        url: "http://localhost:{{ amoc_api_port }}/scenarios/upload"
+        method: PUT
+        headers:
+          Content-Type: "text/plain"
+        body: "{{ lookup('file', module) }}"
