@@ -15,9 +15,16 @@ jobs:
       uses: ansible/ansible-lint-action@master
       with:
         targets: |
-          ansible/docker_netwrok.yml
+          ansible/amoc_cluster_restart.yml
+          ansible/amoc_cluster_start.yml
+          ansible/amoc_cluster_stop.yml
+          ansible/amoc_scenario_start.yml
+          ansible/amoc_scenario_stop.yml
+          ansible/amoc_scenario_upload.yml
+          ansible/docker_network.yml
           ansible/docker_network_test.yml
           ansible/docker_swarm.yml
+          ansible/metrics.yml
 
   execute: 
     runs-on: ubuntu-20.04
