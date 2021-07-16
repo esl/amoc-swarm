@@ -1,0 +1,16 @@
+- name: Start scenario
+  hosts: amoc_cluster[0]
+  tasks:
+    - name: Start amoc scenario on a master node
+      uri:
+        url: "http://localhost:{{ amoc_api_port }}/execution/start"
+        method: PATCH
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body: |
+          {
+            "settings": {{ lookup('template', amoc_scenario_settings_file) }},
+            "scenario": "{{ scenario }}",
+            "users": {{ users }}
+          }
