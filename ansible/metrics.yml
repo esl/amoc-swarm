@@ -1,0 +1,50 @@
+---
+
+- name: Start amoc master node
+  hosts: graphite
+  tasks:
+    - name: Start graphite container
+      docker_container:
+        name: graphite
+        image: graphiteapp/graphite-statsd:1.1.8-1
+        detach: true
+        ports:
+          - "8080:80"
+        hostname : graphite
+        network_mode: "{{ docker_network_name }}"
+        networks_cli_compatible: true
+        container_default_behavior: no_defaults
+        state: started
+
+- name: Start amoc master node
+  hosts: grafana
+  tasks:
+    - name: Start grafana container
+      docker_container:
+        name: grafana
+        image: grafana/grafana:8.0.6
+        detach: true
+        ports:
+          - "3000:3000"
+        hostname : grafana
+        network_mode: "{{ docker_network_name }}"
+        networks_cli_compatible: true
+        container_default_behavior: no_defaults
+        state: started
+    - name: Configure graphite as default data source
+      uri:
+        url: "http://localhost:3000/api/datasources"
+        url_password: admin
+        url_username: admin
+        force_basic_auth: true
+        method: POST
+        status_code: [200, 409]
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          name: "graphite"
+          type: "graphite"
+          url: "http://graphite"
+          access: "proxy"
+          isDefault: true

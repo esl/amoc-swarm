@@ -1,0 +1,7 @@
+---
+
+- name: Stop amoc cluster
+  import_playbook: amoc_cluster_stop.yml
+
+- name: Start amoc cluster
+  import_playbook: amoc_cluster_start.yml

@@ -1,0 +1,7 @@
+- name: Stop scenario
+  hosts: amoc_cluster[0]
+  tasks:
+    - name: Stop amoc scenario on a master node
+      uri:
+        url: "http://localhost:{{ amoc_api_port }}/execution/stop"
+        method: PATCH
