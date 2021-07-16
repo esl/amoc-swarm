@@ -7,6 +7,7 @@
       copy:
         src: "{{ amoc_env_file }}"
         dest: /tmp
+        mode: 0644
 
 - name: Start amoc master node
   hosts: amoc_cluster[0]
