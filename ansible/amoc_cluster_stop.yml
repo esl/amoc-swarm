@@ -1,0 +1,10 @@
+---
+
+- name: Stop amoc cluster
+  hosts: amoc_cluster
+  tasks:
+    - name: Stop amoc container
+      docker_container:
+        name: "{{ inventory_hostname }}"
+        state: absent
+        container_default_behavior: no_defaults
